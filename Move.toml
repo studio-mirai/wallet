@@ -1,0 +1,10 @@
+[package]
+name = "wallet"
+edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
+license = "Apache 2.0"
+authors = ["Studio Mirai, LLC (build@sm.xyz)"]
+
+[dependencies]
+
+[addresses]
+wallet = "0x0"
