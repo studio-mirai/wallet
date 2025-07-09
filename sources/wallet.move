@@ -1,3 +1,4 @@
+// TODO: Add function to close out a balance.
 module wallet::wallet;
 
 use std::type_name::{Self, TypeName};
@@ -5,21 +6,24 @@ use sui::bag::{Self, Bag};
 use sui::balance::{Self, Balance};
 use sui::vec_set::{Self, VecSet};
 
-public struct Wallet has store {
+public struct Wallet has key, store {
+    id: UID,
     balance_types: VecSet<TypeName>,
     balances: Bag,
 }
 
 public fun new(ctx: &mut TxContext): Wallet {
     Wallet {
+        id: object::new(ctx),
         balance_types: vec_set::empty(),
         balances: bag::new(ctx),
     }
 }
 
 public fun destroy(self: Wallet) {
-    let Wallet { balances, .. } = self;
+    let Wallet { id, balances, .. } = self;
     balances.destroy_empty();
+    id.delete();
 }
 
 public fun deposit<Currency>(self: &mut Wallet, balance: Balance<Currency>) {
