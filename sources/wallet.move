@@ -1,13 +1,25 @@
 module wallet::wallet;
 
 use std::type_name::{Self, TypeName};
-use sui::bag::Bag;
+use sui::bag::{Self, Bag};
 use sui::balance::{Self, Balance};
-use sui::vec_set::VecSet;
+use sui::vec_set::{Self, VecSet};
 
 public struct Wallet has store {
     balance_types: VecSet<TypeName>,
     balances: Bag,
+}
+
+public fun new(ctx: &mut TxContext): Wallet {
+    Wallet {
+        balance_types: vec_set::empty(),
+        balances: bag::new(ctx),
+    }
+}
+
+public fun destroy(self: Wallet) {
+    let Wallet { balances, .. } = self;
+    balances.destroy_empty();
 }
 
 public fun deposit<Currency>(self: &mut Wallet, balance: Balance<Currency>) {
